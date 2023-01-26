@@ -1,21 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs')
 
-fs.readdir(process.cwd(), async (err, filenames) => {
-  if (err) {
-    console.error(err)
-  }
-
-  for (let filename of filenames) {
-    try {
-      const stats = await lstat(filename)
-      console.log(filename, 'Directory?:', stats.isDirectory())
-    } catch (err) {
-      console.error(err)
-    }
-  }
-})
-
 const lstat = (filename) => {
   return new Promise((resolve, reject) => {
     fs.lstat(filename, (err, stats) => {
@@ -26,3 +11,18 @@ const lstat = (filename) => {
     })
   })
 }
+
+fs.readdir(process.cwd(), async (err, filenames) => {
+  if (err) {
+    console.error(err)
+  }
+
+  const statPromises = filenames.map((filename) => lstat(filename))
+
+  const allStats = await Promise.all(statPromises)
+
+  for (const stats of allStats) {
+    const index = allStats.indexOf(stats)
+    console.log(filenames[index], stats.isFile())
+  }
+})

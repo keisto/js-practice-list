@@ -18,5 +18,8 @@
   "homepage": "https://github.com/keisto/js-practice-list#readme",
   "bin": {
     "nls": "index.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2"
   }
 }
